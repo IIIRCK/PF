@@ -75,6 +75,21 @@ public  class Persona extends MyExeptions {
 
     public String getCorreo() {return correo;}
 
+   public String getNombre(){
+        return nombre;
+   }
+
+
+    public String getNumero(){
+        return numero;
+    }
+
+public String getDireccion(){
+        return direccion;}
+    public String[] getApellido(){
+        return apellido;
+    }
+
     @Override
     public String toString() {
         return   nombre +

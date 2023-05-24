@@ -11,7 +11,12 @@ public class Cliente extends Persona   {
     public Cliente(String nombre, String[] apellido, String direccion, String numero, String correo , String psswd) throws Input_Constructor_Error {
         super(nombre, apellido, direccion, numero, correo);
         this.id= idct;
-        this.psswd = psswd;
+        if(psswd.isEmpty()){
+            this.psswd = null;
+        }else {
+            this.psswd = psswd;
+        }
+
         idct++;
     }
 
@@ -29,6 +34,10 @@ public class Cliente extends Persona   {
         return psswd;
     }
 
+    public String  getcliente(){
+        return id + " " + this.getNombre()+ " " + this.getNumero();
+    }
+
     @Override
     public String toString() {
         return super.toString() + ";" +
@@ -36,4 +45,6 @@ public class Cliente extends Persona   {
                 id;
 
     }
+
+
 }

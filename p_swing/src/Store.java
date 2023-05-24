@@ -1,107 +1,398 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 public class Store {
-    private JComboBox comboBox1;
+    private JComboBox cbxspuesto;
     private JPanel panel;
     private JPanel p0;
     private JTextField mail;
     private JTabbedPane p1;
-    private JPanel tbpusuario;
-    private JPanel tbpcatalogo;
-    private JPanel tbpcarrito;
     private JPasswordField psswd;
     private JButton login;
     private JButton singin;
     private JLabel llnotify;
     private JPanel p01;
-    private JLabel nombre;
     private JTextField tfsnombre;
-    private JTextField textField2;
-    private JTextField textField3;
+    private JTextField tfscorreo;
     private JTextField tfsapellido;
-    private JLabel tfsdireccion;
-    private JLabel tfsnumero;
-    private JLabel tfscorreo;
-    private JLabel pfspsswd;
-    private JButton createButton;
+    private JButton p01DBoton;
     private JButton cancelButton;
     private JLabel lsnotify;
-    private JPasswordField passwordField1;
-    private JLabel pfpsswd1;
-    private JPanel tbppedidos;
-    private JTabbedPane p2;
+    private JTextField pfspsswd1;
+    private JLabel lspsswd0;
+    private JLabel lspsswd1;
+    private JLabel lspuesto;
+    private JTextField pfspsswd0;
+    private JTextField tfsnumero;
+    private JTextField tfsdireccion;
+    private JPanel p1_1;
+    private JButton okbcliente;
+    private JButton p1cboton1;
+    private JButton p1cboton2;
+    private JButton p1ccarrito;
+    private JPanel p1catalogo;
+    private JLabel p1cprecio;
+    private JPanel p1cimagen;
+    private JComboBox p1ccantidad;
+    private JComboBox clientescbox;
+    private JTextField tfcliente;
+    private JLabel p1clientntfy;
+    private JTextArea p1clientelist;
+    private JComboBox p01DList;
+    private JTextField p01tfsalary;
+    private JTextPane p1tpclientlist;
+    private JScrollPane p1splist;
+    private JComboBox cbxstipo;
+    private JTextArea textArea1;
+    private JTextPane p1alista;
+    private JComboBox comboBox1;
+    private JButton button1;
+    private JPanel p1almacen;
+    List<Cliente> clientes = Cliente.getClientes();
+    List<Personal> personal = Personal.get_personal();
+    Map<Integer, Integer> almacen = Almacen.get_productos();
+    List<Producto> catalogo = Catalogo.get_productos();
 
-    static List<Cliente> clientes = Cliente.getClientes();
-    static List<Personal> personal = Personal.get_personal();
+    int crrntid =-1;
+    String prvp = "";
+    enum p01tipo{
+        cliente,
+        personal
 
-    public Store() throws MyExeptions.Input_Constructor_Error {
+    }
+    enum p01action {
+        Crear,
+        Guardar,
+        Cambiar_Psswd,
+        Delete_cliente,
+        Delete_personal,
+    }
+
+    public Store()  throws MyExeptions.Input_Constructor_Error {
+        JTextField[] tfdisa = {p01tfsalary,pfspsswd0,pfspsswd1};
+        new Catalogo().fill_Catalogo();
+
+        for (JTextField tf : tfdisa) {
+            tf.setEnabled(false);
+
+        }
+        JTextPane[] tpdisa = {p1tpclientlist};
+        for (JTextPane tf : tpdisa) {
+            tf.setEnabled(false);
+
+        }
+
+        JComboBox[] cbdisa = {cbxstipo};
+        for (JComboBox tf : cbdisa) {
+            tf.enable(false);
+
+        }
+        // arriba setea algunos campos como deshabilitados
+        Sistema sys = new Sistema();
         JFrame frame = new JFrame("Login");
-        new Cliente("Juan", new String[]{"Perez","12"}, "Calle 1", "123456789", "hola@gmail.com", "1234").add_Cliente();
-        new Personal().add_personal(new Personal("Juan", new String[]{"Perez","ss"}, "Calle 1", "123456789", "jefe@gmail.com", "1000", Personal.cargo.jefe, "1234"));
+        frame.setContentPane(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(500, 400));
+        frame.pack();
+        frame.setVisible(true);
         CardLayout cardLayout = new CardLayout();
-
         panel.setLayout(cardLayout);
         p0.setVisible(true);
         p01.setVisible(false);
         p1.setVisible(false);
-
         panel.add(p0, "Login");
         panel.add(p1, "Main");
         panel.add(p01, "Singin");
-        frame.setContentPane(panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(600, 600));
-        frame.pack();
-        frame.setVisible(true);
 
-        mail.setText("hola@gmail.com");
+
+        new Cliente("Juan", new String[]{"Perez", "12"}, "Calle 1", "123456789", "hola@gmail.com", "1234").add_Cliente();
+        new Personal().add_personal(new Personal("Juan", new String[]{"Perez", "ss"}, "Calle 1", "987654321", "jefe@gmail.com", "1000", Personal.cargo.jefe, "1234"));
+        new Cliente("Jose", new String[]{"Perez", "12"}, "Calle 1", "123451111", "hola@gmail.com", "1234").add_Cliente();
+
+        mail.setText("jefe@gmail.com");
         psswd.setText("1234");
 
-        login.addActionListener( a->{
-            if (login()) {
-                cardLayout.show(panel, "Main");
-                frame.setTitle("Store");
-                llnotify.setText("");} else {
-                llnotify.setText("Credenciales incorrectas");}}
+        //login
+        login.addActionListener(a -> {
+                    if (sys.login(mail, psswd)) {
+                        cardLayout.show(panel, "Main");
+                        frame.setTitle("Store");
+                        llnotify.setText("");
+                    } else {
+                        llnotify.setText("Credenciales incorrectas");
+                    }
+                }
         );
-        singin.addActionListener(a ->{
+
+
+        //P01 = Singin/Modify
+        // abajo se setea configuraciones para los comboBoxes como tipo de personal, tipo de persona y acciones
+        singin.addActionListener(a -> {
             cardLayout.show(panel, "Singin");
             frame.setTitle("Singin");
+            set_empty();
+            crrntid =-1;
 
         });
+        personal.forEach(p -> {
+            for ( Personal.cargo c: Personal.cargo.values()) {
+                cbxstipo.addItem( c);
+            }
+
+        });//anade los tipos de personal al comboBox
+        //setea los tipos de persona
+        cbxspuesto.addItem(p01tipo.cliente);
+        cbxspuesto.addItem(p01tipo.personal);
+        //setea las acciones
+        p01DList.addItem(p01action.Crear);
+        p01DList.addItem(p01action.Guardar);
+        p01DList.addItem(p01action.Cambiar_Psswd);
+        p01DList.addItem(p01action.Delete_cliente);
+        p01DList.addItem(p01action.Delete_personal);
+
+        cbxspuesto.addActionListener(a->{
+            if (cbxspuesto.getSelectedItem().equals(p01tipo.personal)){
+                p01tfsalary.setEnabled(true);
+                pfspsswd0.setEnabled(true);
+                pfspsswd1.setEnabled(true);
+            }else{ p01tfsalary.setEnabled(false);
+                pfspsswd0.setEnabled(false);
+                pfspsswd1.setEnabled(false);
+            }
+        });//comprueba si es personal o cliente y habilita o deshabilita campos
+
+        cbxstipo.addActionListener(a-> {
+            if(cbxspuesto.getSelectedItem().equals(p01tipo.personal)){
+                cbxstipo.enable(true);
+            }else cbxstipo.enable(false);
+        });//comprueba si es personal o cliente y habilita o deshabilita campos
+
+        p01DBoton.addActionListener(x -> {
+            if(p01DList.getSelectedItem().equals(p01action.Crear)){
+                load_to_create();
+            } else  if(p01DList.getSelectedItem().equals(p01action.Guardar)){
+                load_to_save();
+            }
+            else if(p01DList.getSelectedItem().equals(p01action.Delete_cliente)){
+                clientes.removeIf(c -> c.getId() == crrntid);
+            }else if (p01DList.getSelectedItem().equals(p01action.Delete_cliente)){
+                if(crrntid != -1){
+                    clientes.removeIf(c -> c.getId() == crrntid);
+                    lsnotify.setText("Cliente eliminado");
+                }else   lsnotify.setText("No hay cliente seleccionado");
+
+            }
+
+        });//comprueba que accion se quiere realizar y llama a la funcion correspondiente
+
+        cancelButton.addActionListener(a -> {
+            if (prvp != "") {
+                cardLayout.show(panel, prvp);
+                frame.setTitle("Store");
+            } else {
+                cardLayout.show(panel, "Login");
+                frame.setTitle("Login");
+                crrntid = -1;
+            }
+
+        });//cancela la accion y vuelve al login
+
+        //CLIENTES
+        clientescbox.addItem("Listar");
+        clientescbox.addItem("Modificar");
+        clientescbox.addItem("Eliminar");
+        clientescbox.addItem("Crear");
+        p1splist.add(p1tpclientlist);
+        okbcliente.addActionListener(a->{
+            sys.println("ok");
+
+            if(clientescbox.getSelectedItem().equals("Listar") && !tfcliente.getText().equals("")){
+                clientes.forEach(c -> {
+                    if (String.valueOf(c.getId()).equals(tfcliente.getText()) || c.getNumero().equals(tfcliente.getText())){
+                    p1tpclientlist.setText(c.toString());
+                    p1clientntfy.setText("encontrado ");}
+                    else p1clientntfy.setText("no encontrado");
+                });
+            }else if(clientescbox.getSelectedItem().equals("Listar")){
+                p1tpclientlist.setText("");
+                clientes.forEach(c -> p1tpclientlist.setText(p1tpclientlist.getText() + c.toString() + "\n"));
+                p1clientntfy.setText("listado");
+            }
+            else if(clientescbox.getSelectedItem().equals("Modificar")) {
+                String x = tfcliente.getText();
+                prvp = "Main";
+                clientes.forEach(c -> {
+                    if (String.valueOf(c.getId()).equals(x) || c.getNumero().equals(x)) {
+                        cardLayout.show(panel, "Singin");
+                        crrntid = c.getId();
+                        load_to_edit(c.getId());
+                    }else p1clientntfy.setText("no encontrado");
+                });
+            }else if(clientescbox.getSelectedItem().equals("Crear")) {
+                prvp = "Main";
+                cardLayout.show(panel, "Singin");
+                crrntid = -1;
+            }
+            });
+    //catalogo
+        p1cboton1.addActionListener(a -> {
+
+            Producto cc = new Catalogo().getBackItem(catalogo);
+            ImageIcon ii = new ImageIcon(cc.getImgpath());
+            p1cimagen.add(new JLabel(ii));
+        });
+
+
+
+
+
     }
 
-    public boolean login() {
-        String username = mail.getText();
-        String password = new String(psswd.getPassword());
-        for (Personal personal : personal) {
-            if (personal.getCorreo().equals(username) && personal.getPsswd().equals(password)) {
-                return true;
-            }
-
+    public void load_to_edit(int id)
+    {   clientes.forEach(p->{
+        if(p.getId()==id) {
+            tfsnombre.setText(p.getNombre());
+            String[] a = p.getApellido();
+            tfsapellido.setText(a[0] + " " + a[1]);
+            tfscorreo.setText(p.getCorreo());
+            tfsdireccion.setText(p.getDireccion());
+            tfsnumero.setText(p.getNumero());
+            crrntid = p.getId();
         }
+    });
+    }
+    public void load_to_save() {
+        String a = tfsnombre.getText();
+        String[] b = tfsapellido.getText().split(" ");
+        String c = tfscorreo.getText();
+        String d = tfsdireccion.getText();
+        String e = tfsnumero.getText();
+        String h = pfspsswd0.getText();
+        String g = pfspsswd1.getText();
+        String f = p01tfsalary.getText();
+        Object i = cbxstipo.getSelectedItem();
 
-        for (Cliente cliente : clientes) {
-            if (cliente.getCorreo().equals(username) && cliente.getPsswd().equals(password)) {
+            if (cbxspuesto.getSelectedItem().equals(p01tipo.cliente)) {
+                for (Cliente cc : clientes) {
+                    if (cc.getId() == crrntid) {
+                        try {
+                            cc.setNombre(a);
+                        } catch (Exception ex) {
+                            lsnotify.setText(ex.getMessage());
+                        }
+                        try {
+                            cc.setApellido(b);
+                        } catch (Exception ex) {
+                            lsnotify.setText(ex.getMessage());
+                        }
+                        try {
+                            cc.setCorreo(c);
+                        } catch (Exception ex) {
+                            lsnotify.setText(ex.getMessage());
+                        }
+                        try {
+                            cc.setDireccion(d);
+                        } catch (Exception ex) {
+                            lsnotify.setText(ex.getMessage());
+                        }
+                        try {
+                            cc.setNumero(e);
+                        } catch (Exception ex) {
+                            lsnotify.setText(ex.getMessage());
+                        }
+                        lsnotify.setText("guardado");
+                    }}
+
+
+            }
+
+    }
+    public void load_to_create() {
+        String a = tfsnombre.getText();
+        String[] b = tfsapellido.getText().split(" ");
+        String d = tfsdireccion.getText();
+        String e = tfsnumero.getText();
+        String c = tfscorreo.getText();
+        String h = pfspsswd0.getText();
+        String g = pfspsswd1.getText();
+
+        if (!chkcurrent(crrntid)) {
+            try {
+
+                if (cbxspuesto.getSelectedItem().equals(p01tipo.cliente)) {
+                    clientes.add(new Cliente(a, b, d, e, c, ""));
+                    lsnotify.setText("creado");
+                }
+            } catch (Exception ex) {
+                lsnotify.setText(ex.getMessage());
+            }
+        } else lsnotify.setText("ya existe");
+    }
+
+    public void set_empty(){
+        tfsnombre.setText("");
+        tfsapellido.setText("");
+        tfscorreo.setText("");
+        tfsdireccion.setText("");
+        tfsnumero.setText("");
+        pfspsswd0.setText("");
+        pfspsswd1.setText("");
+    }
+
+
+
+    public boolean chkcurrent(int id) {
+        String x ="";
+        for (Cliente c : clientes) {
+            if (c.getId() == id) {
+               x = c.getNumero();
+               break;
+            }
+        }
+        for (Cliente c : clientes) {
+            if (c.getNumero().equals(x)) {
                 return true;
             }
-            cliente.toString();
         }
         return false;
     }
+    public void add_to_almacen(){
+        int[] id_c = {1, 11, 13};
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new Store();
-                } catch (MyExeptions.Input_Constructor_Error e) {
-                    throw new RuntimeException(e);
+
+        int[] cantidad = {1, 2, 3};
+
+        for (int i = 0; i < id_c.length; i++) {
+            int id = id_c[i];
+            int cantidadProducto = cantidad[i];
+            for (Producto producto : catalogo) {
+                if (producto.getId() == id) {
+                    for (int j = 0; j < cantidadProducto; j++) {
+                        new Almacen().add_producto(producto.getId());
+                    }
+                    break;
                 }
             }
-        });
+        }
     }
+    public void reload_almacen(){
+        for (Producto c : catalogo) {
+            for (Map.Entry<Integer, ?> entry : almacen.entrySet()) {
+                if (c.getId() == entry.getKey()) {
+                    System.out.println(c.getNombre() + " " + c.getImgpath());
+                }
+            }
+        }
+    }
+
+
+    public static void main(String[] args)  throws MyExeptions.Input_Constructor_Error {
+        new Store();
+
+    }
+
+
+
 }

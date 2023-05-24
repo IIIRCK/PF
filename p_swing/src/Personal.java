@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -83,7 +82,9 @@ public class Personal extends Persona  {
         return id;
     }
 
-
+    public cargo getCargo() {
+        return cargo;
+    }
 
 
     public cargo get_cargo() {
@@ -134,7 +135,7 @@ public class Personal extends Persona  {
         public void remove() {
             Personal removedPersonal = personal.remove(currentIndex - 1);
             currentIndex--;
-            System.out.println("Removed: " + removedPersonal);
+           System.out.println("Removed: " + removedPersonal);
         }
 
 
