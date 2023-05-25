@@ -31,7 +31,6 @@ public class Store {
     private JButton okbcliente;
     private JButton p1cboton1;
     private JButton p1cboton2;
-    private JButton p1ccarrito;
     private JPanel p1catalogo;
     private JLabel p1cprecio;
     private JPanel p1cimagen;
@@ -45,11 +44,16 @@ public class Store {
     private JTextPane p1tpclientlist;
     private JScrollPane p1splist;
     private JComboBox cbxstipo;
-    private JTextArea textArea1;
+    private JTextArea p1cdata;
     private JTextPane p1alista;
     private JComboBox comboBox1;
     private JButton button1;
     private JPanel p1almacen;
+    private JComboBox p1cfiltro;
+    private JSlider p1cslider;
+    private JButton p1ccarrito;
+    private JTextField textField1;
+    private JButton button2;
     List<Cliente> clientes = Cliente.getClientes();
     List<Personal> personal = Personal.get_personal();
     Map<Integer, Integer> almacen = Almacen.get_productos();
@@ -57,6 +61,7 @@ public class Store {
 
     int crrntid =-1;
     String prvp = "";
+    int crrntct = 0;
     enum p01tipo{
         cliente,
         personal
@@ -94,7 +99,7 @@ public class Store {
         JFrame frame = new JFrame("Login");
         frame.setContentPane(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(500, 400));
+        frame.setPreferredSize(new Dimension(600, 400));
         frame.pack();
         frame.setVisible(true);
         CardLayout cardLayout = new CardLayout();
@@ -202,7 +207,7 @@ public class Store {
         //CLIENTES
         clientescbox.addItem("Listar");
         clientescbox.addItem("Modificar");
-        clientescbox.addItem("Eliminar");
+        //clientescbox.addItem("Eliminar");
         clientescbox.addItem("Crear");
         p1splist.add(p1tpclientlist);
         okbcliente.addActionListener(a->{
@@ -237,13 +242,52 @@ public class Store {
             }
             });
     //catalogo
+
+        //actualiza el notificador de cantidad
+        p1cprecio.setText("0");
+        p1cslider.addChangeListener(c->{
+            p1cprecio.setText(String.valueOf(p1cslider.getValue()));
+        });
+        p1cfiltro.addItem("Filtro");
+        p1cfiltro.addItem("Marca");
+        p1cfiltro.addItem("Precio");
+        add_to_almacen();
         p1cboton1.addActionListener(a -> {
 
             Producto cc = new Catalogo().getBackItem(catalogo);
             ImageIcon ii = new ImageIcon(cc.getImgpath());
-            p1cimagen.add(new JLabel(ii));
+            p1cdata.setText(
+                    "|| Nombre:" + cc.getNombre()+
+                            " || Marca: " + cc.getMarca()
+            );
+            check_ct_almacen(cc.getId());
+        });
+        p1cboton2.addActionListener(a -> {
+            Producto cc = new Catalogo().getNextItem(catalogo);
+            p1cdata.setText(
+                    "|| Nombre:" + cc.getNombre()+
+                            " || Marca: " + cc.getMarca()
+
+            );
+           check_ct_almacen(cc.getId());
+
         });
 
+        p1ccarrito.addActionListener(a->{
+
+        });
+
+
+        try {
+            ImageIcon ii = new ImageIcon("/src/img/manga.png");
+            JLabel il = new JLabel();
+            il.setLayout( new BorderLayout());
+            il.setIcon(ii);
+            il.setPreferredSize(new Dimension(100, 100));
+            p1cimagen.add(il, BorderLayout.CENTER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -358,11 +402,10 @@ public class Store {
         }
         return false;
     }
+    //ALMACEN
     public void add_to_almacen(){
-        int[] id_c = {1, 11, 13};
-
-
-        int[] cantidad = {1, 2, 3};
+        int[] id_c = {1, 2, 3};
+        int[] cantidad = {1, 5, 6};
 
         for (int i = 0; i < id_c.length; i++) {
             int id = id_c[i];
@@ -385,6 +428,18 @@ public class Store {
                 }
             }
         }
+    }
+    public void check_ct_almacen(int id) {
+        int ct=0;
+        for (Map.Entry<Integer, Integer> e : almacen.entrySet()) {
+                if(id == e.getValue().intValue()) {
+                    ct++;
+                    System.out.println("id "+ id +" value "+e.getValue() +" pid " + e.getKey());
+                }
+        }
+        p1cslider.setMaximum(ct);
+        p1cslider.setValue(p1cslider.getMaximum());
+
     }
 
 
