@@ -22,7 +22,7 @@ public class Producto  extends MyExeptions{
 
 
         this.id = idct;
-        if(nombre.isEmpty()|| marca.isEmpty()|| precio.isEmpty()|| categoria.get_Nombre().isEmpty()|| imgpath.isEmpty()){
+        if(nombre.isEmpty()|| marca.isEmpty()|| precio.isEmpty()|| categoria.get_Nombre().isEmpty()){
             throw new Input_Constructor_Error("Error en el constructor de Producto");
         }
         this.nombre = nombre;
@@ -75,6 +75,11 @@ public class Producto  extends MyExeptions{
         this.imgpath = c.imgpath;
         idctpa++;
     }
+    public Producto(){
+
+    }
+
+
 
 
     public static  List<Producto> get_productos(){
@@ -188,6 +193,14 @@ public class Producto  extends MyExeptions{
         public String get_Nombre() {
             return this.nombre;
         }
+        public String set_categoria(String x){
+            for (Categoria c: categorias) {
+                if(c.get_Nombre().equals(x)){
+                    return c.get_Nombre();
+                }
+            }
+            return "";
+        };
         public static void remove_Categoria(String nombreCategoria) {
             Categoria categoriaEliminar = null;
             for (Categoria categoria : categorias) {

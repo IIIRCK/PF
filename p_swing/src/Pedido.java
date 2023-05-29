@@ -15,19 +15,21 @@ public class Pedido {
     private int[] id_p_a;
     private int[] id_p_c;
     private int[] ct;
+    private int precio;
     private int id_cliente;
     private boolean aceptado;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaAceptado ;
     private LocalDateTime fechaEntrega ;
     //Map<Producto,Integer>
-    public Pedido(int[] id_p_c,int[]ct,int id_cliente ) {
+    public Pedido(int[] id_p_c,int[]ct,int precio ,int id_cliente ) {
         this.id = idct;
         this.id_p_c = id_p_c;
         this.ct = ct;
         this.id_p_a = new int[0];
         this.id_cliente = id_cliente;
         this.aceptado = false;
+        this.precio = precio;
         this.fechaInicio = LocalDateTime.now();
         this.fechaAceptado = null;
         idct++;
@@ -41,8 +43,8 @@ public class Pedido {
         return pedidos;
     }
 
-    public void add_pedido(int[] id_p_c,int[] ct , int id_cliente){
-            pedidos.add(new Pedido(id_p_c, ct, id_cliente));
+    public void add_pedido(int[] id_p_c,int[] ct,int p , int id_cliente){
+            pedidos.add(new Pedido(id_p_c, ct,p, id_cliente));
     }
 
     @Override
@@ -56,6 +58,7 @@ public class Pedido {
                 ", aceptado=" + aceptado +
                 ", fecha='" + fechaInicio + '\'' +
                 ", fecha='" + fechaAceptado + '\'' +
+                ",precio=" + precio+
                 '}';
     }
     public static void ordenarPorFecha(List<Pedido> pedidos) {
