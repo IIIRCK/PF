@@ -42,7 +42,7 @@ public class Store {
     private JComboBox p01DList;
     private JTextField p01tfsalary;
     private JTextPane p1tpclientlist;
-    private JScrollPane p1splist;
+    //private JScrollPane p1splist;
     private JComboBox cbxstipo;
     private JTextArea p1cdata;
     private JTextPane p1alista;
@@ -52,16 +52,47 @@ public class Store {
     private JComboBox p1cfiltro;
     private JSlider p1cslider;
     private JButton p1ccarrito;
-    private JTextField textField1;
-    private JButton button2;
+    private JTextField p1ctfid;
+    private JButton p1cvender;
+    private JTextPane p1clista;
+    private JButton p1saddp;
+    private JPanel P02;
+    private JTextField p02tfn;
+    private JTextField p02tfm;
+    private JTextField p02tfp;
+    private JComboBox p02cbc;
+    private JButton p02btc;
+    private JButton p02bta;
+    private JPanel p1setings;
+    private JLabel p02ntfy;
+    private JButton p1climpiar;
+    private JButton p1cbtid;
+    private JPanel p1carrito;
+    private JLabel p1cntfy;
+    private JScrollPane p1cscroollp;
+    private JLabel p1ctotal;
+    private JTextPane p1pedidos;
     List<Cliente> clientes = Cliente.getClientes();
     List<Personal> personal = Personal.get_personal();
     Map<Integer, Integer> almacen = Almacen.get_productos();
     List<Producto> catalogo = Catalogo.get_productos();
-
+    List<Producto.Categoria> categorias = Producto.Categoria.getCategorias();
+    Map<Integer,Integer> carrito = Carrito.get_productos();
+    List<Pedido> pedidos = Pedido.get_pedidos();
     int crrntid =-1;
     String prvp = "";
     int crrntct = 0;
+
+    int crrtpr =0;
+    int crrtotal =0;
+
+    int[] ctpc = new int[5];
+    int[] ctpcc = new int[5];
+
+    int ctpid;
+
+    int ct=0;
+
     enum p01tipo{
         cliente,
         personal
@@ -75,8 +106,9 @@ public class Store {
         Delete_personal,
     }
 
-    public Store()  throws MyExeptions.Input_Constructor_Error {
+    public Store()  throws MyExeptions.Input_Constructor_Error, MyExeptions.Input_Constructor_Error {
         JTextField[] tfdisa = {p01tfsalary,pfspsswd0,pfspsswd1};
+
         new Catalogo().fill_Catalogo();
 
         for (JTextField tf : tfdisa) {
@@ -110,8 +142,7 @@ public class Store {
         panel.add(p0, "Login");
         panel.add(p1, "Main");
         panel.add(p01, "Singin");
-
-
+        panel.add(P02,"addp") ;
         new Cliente("Juan", new String[]{"Perez", "12"}, "Calle 1", "123456789", "hola@gmail.com", "1234").add_Cliente();
         new Personal().add_personal(new Personal("Juan", new String[]{"Perez", "ss"}, "Calle 1", "987654321", "jefe@gmail.com", "1000", Personal.cargo.jefe, "1234"));
         new Cliente("Jose", new String[]{"Perez", "12"}, "Calle 1", "123451111", "hola@gmail.com", "1234").add_Cliente();
@@ -209,7 +240,7 @@ public class Store {
         clientescbox.addItem("Modificar");
         //clientescbox.addItem("Eliminar");
         clientescbox.addItem("Crear");
-        p1splist.add(p1tpclientlist);
+        // p1splist.add(p1tpclientlist);
         okbcliente.addActionListener(a->{
             sys.println("ok");
 
@@ -258,8 +289,10 @@ public class Store {
             ImageIcon ii = new ImageIcon(cc.getImgpath());
             p1cdata.setText(
                     "|| Nombre:" + cc.getNombre()+
-                            " || Marca: " + cc.getMarca()
+                            " || Marca: " + cc.getMarca()+
+                    "CATEGORIA: " +cc.getCategoria()
             );
+            crrtpr = cc.getId();
             check_ct_almacen(cc.getId());
         });
         p1cboton2.addActionListener(a -> {
@@ -269,11 +302,51 @@ public class Store {
                             " || Marca: " + cc.getMarca()
 
             );
+            crrtpr = cc.getId();
            check_ct_almacen(cc.getId());
 
         });
-
+        //boton para anyadir al carrito
         p1ccarrito.addActionListener(a->{
+
+            int xx = p1cslider.getValue();
+            ctpcc[ct]= xx;
+            ctpc[ct] = crrtpr;
+            ct++;
+        new Carrito().add_producto(crrtpr,p1cslider.getValue());
+        String x = crrtpr +" "+ String.valueOf(p1cslider.getValue());
+        sys.println(x);
+            for (Producto cc : catalogo) {
+                for (Map.Entry<Integer, ?> entry : carrito.entrySet()) {
+                    if (cc.getId() == crrtpr) {
+                        new Carrito().add_producto(crrtpr,p1cslider.getValue());
+                        p1clista.setText(p1clista.getText()+ " "+cc.getNombre()+" " + cc.getPrecio() +"\n");
+                        crrtotal+=cc.getPrecio();
+
+                        p1ctotal.setText(String.valueOf(crrtotal));
+                       // System.out.println(cc.getNombre() + " " +cc.getPrecio());
+                    }
+                }
+            }
+
+        });
+
+        p1cvender.addActionListener(a->{
+            for (Producto c : catalogo) {
+                for (Map.Entry<Integer, ?> entry : carrito.entrySet()) {
+                    if (c.getId() == entry.getKey()) {
+                        System.out.println(c.getNombre() + " " + c.getImgpath());
+                    }
+                }
+            }
+            int id = Integer.parseInt(p1ctfid.getText());
+            new Pedido().add_pedido(ctpc,ctpcc,crrtotal,id);
+            pedidos.forEach(p->{
+                p.toString();
+            });
+            pedidos.forEach(p->{
+                p1pedidos.setText(p1pedidos.getText()+p.toString());
+            });
 
         });
 
@@ -288,6 +361,65 @@ public class Store {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        p1saddp.addActionListener(a->{
+            cardLayout.show(panel,"addp");
+        });
+        p02cbc.addItem("");
+        p02cbc.addItem("VideoJuegos");
+        p02cbc.addItem("Comics");
+        p02cbc.addItem("Manga");
+        p02cbc.addItem("Funkos");
+
+
+        p02bta.addActionListener(a->{
+            boolean x= true;
+            String b = p02tfn.getText();
+            String c = p02tfm.getText();
+            String d = p02tfp.getText();
+            String e = p02cbc.getSelectedItem().toString();
+            try {
+                catalogo.add(new Producto(b,c,d,new Producto.Categoria(e),"", false));
+            } catch (Exception ex) {
+                x = false;
+                p02ntfy.setText(ex.getMessage());
+            }
+
+
+
+            if(x) {
+                cardLayout.show(panel,"Main");
+
+            }
+
+
+
+        });
+
+        p02btc.addActionListener(a->{
+            cardLayout.show(panel,"Main");
+        });
+
+        //p1clista.enable(false);
+        p1cbtid.addActionListener(a->{
+            int x = Integer.parseInt(p1ctfid.getText());
+            for (Cliente p : clientes)
+            {
+                if (p.getId()!=x){
+                    p1cntfy.setText("not found");
+                }
+                else p1cntfy.setText("found");
+            }
+        });
+
+
+
+
+
+
+
+
+
 
 
 
@@ -362,7 +494,7 @@ public class Store {
         String h = pfspsswd0.getText();
         String g = pfspsswd1.getText();
 
-        if (!chkcurrent(crrntid)) {
+        if (!chkcurrent(crrntct)) {
             try {
 
                 if (cbxspuesto.getSelectedItem().equals(p01tipo.cliente)) {
@@ -372,8 +504,9 @@ public class Store {
             } catch (Exception ex) {
                 lsnotify.setText(ex.getMessage());
             }
-        } else lsnotify.setText("ya existe");
-    }
+        } else {
+            lsnotify.setText("ya existe");
+        }}
 
     public void set_empty(){
         tfsnombre.setText("");
