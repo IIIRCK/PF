@@ -8,7 +8,7 @@ public class DBConn{
     private static Statement statement;
 
    static List<Producto> catalogo = new ArrayList<>();
-
+   static List<Pedido> pedidos = new ArrayList<>();
     public DBConn()throws Exception
     {
         Class.forName("oracle.jdbc.OracleDriver");
@@ -126,6 +126,21 @@ public class DBConn{
         }
     }
 
+    public void fill_pedido() throws SQLException{
+        String qry = "SELECT  * FROM PEDIDOS";
+        PreparedStatement ps = connection.prepareStatement(qry);
+        try{
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                new Pedido().add_pedido(rs.getInt(1),rs.getArray(2),rs.getArray(3),rs.getInt(4),rs.getInt(5));
+            }
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            ps.close();
+        }
+    }
 
 
 

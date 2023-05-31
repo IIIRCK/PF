@@ -22,17 +22,27 @@ public class Pedido {
     private LocalDateTime fechaAceptado ;
     private LocalDateTime fechaEntrega ;
     //Map<Producto,Integer>
-    public Pedido(int[] id_p_c,int[]ct,int precio ,int id_cliente ) {
+    public Pedido(int[] id_p_c,int[]ct,int precio ,int id_cliente) {
         this.id = idct;
         this.id_p_c = id_p_c;
-        this.ct = ct;
         this.id_p_a = new int[0];
-        this.id_cliente = id_cliente;
-        this.aceptado = false;
         this.precio = precio;
-        this.fechaInicio = LocalDateTime.now();
-        this.fechaAceptado = null;
+        this.id_cliente = id_cliente;
+        //this.aceptado = false;
+        //this.fechaInicio = LocalDateTime.now();
+        //this.fechaAceptado = null;
         idct++;
+    }
+    public Pedido(int id, int[] id_p_c,int[]ct,int precio ,int id_cliente) {
+        this.id = id;
+        this.id_p_c = id_p_c;
+        this.ct = ct;
+        this.precio = precio;
+        this.id_cliente = id_cliente;
+        //this.aceptado = false;
+        //this.fechaInicio = LocalDateTime.now();
+        //this.fechaAceptado = null;
+
     }
 
     public Pedido() {
@@ -43,8 +53,28 @@ public class Pedido {
         return pedidos;
     }
 
-    public void add_pedido(int[] id_p_c,int[] ct,int p , int id_cliente){
-            pedidos.add(new Pedido(id_p_c, ct,p, id_cliente));
+    public void add_pedido(int id ,int[] id_p_c,int[] ct,int p , int id_cliente){
+            pedidos.add(new Pedido(id,id_p_c, ct,p, id_cliente));
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int[] getId_p_c() {
+        return id_p_c;
+    }
+
+    public int[] getCt() {
+        return ct;
+    }
+
+    public int getPrecio() {
+        return precio;
+    }
+
+    public int getId_cliente() {
+        return id_cliente;
     }
 
     @Override
