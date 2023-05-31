@@ -79,7 +79,22 @@ public class Producto  extends MyExeptions{
 
     }
 
+    public Producto(int id, String s, String eaSports, String number, Categoria c) {
+        this.id = id;
+        this.nombre = s;
+        this.marca = eaSports;
+        this.precio = Integer.parseInt(number);
+        this.categoria = c;
 
+    }
+    public Producto( String s, String eaSports, String number, Categoria c) {
+        this.id = idct;
+        this.nombre = s;
+        this.marca = eaSports;
+        this.precio = Integer.parseInt(number);
+        this.categoria = c;
+        idct++;
+    }
 
 
     public static  List<Producto> get_productos(){
@@ -177,7 +192,9 @@ public class Producto  extends MyExeptions{
                 '}';
     }
 
-
+    public void setId(int anInt) {
+        this.id = anInt;
+    }
 
 
     public static class Categoria {

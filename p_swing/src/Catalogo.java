@@ -14,19 +14,10 @@ public class Catalogo {
     }
     public void fill_Catalogo(){
         try {
-            productos.add(new Producto("FIFA 21", "EA Sports", "60", new Producto.Categoria("Videojuegos"), "/src/img/manga.png",false));
-            productos.add(new Producto("Call of Duty: Black Ops Cold War", "Activision", "30", new Producto.Categoria("Videojuegos"), "src/3img/manga.png",false));
-            productos.add(new Producto("Overwatch", "Blizzard", "20", new Producto.Categoria("Videojuegos"), "img/overwatch.jpg",false));
-            productos.add(new Producto("Batman: The Killing Joke",1,"DC Comics", "20", new Producto.Categoria("Comics"), "img/batman.jpg",false));
-            productos.add(new Producto("The Walking Dead",1,"Image Comics", "20", new Producto.Categoria("Comics"), "img/walkingdead.jpg",false));
-            productos.add(new Producto("Watchmen",1,"DC Comics", "20", new Producto.Categoria("Comics"), "img/watchmen.jpg", false));
-            productos.add(new Producto("Dragon Ball",1,"Shueisha", "20", new Producto.Categoria("Manga"), "img/dragonball.jpg",false));
-            productos.add(new Producto("One Piece",1,"Shueisha", "20", new Producto.Categoria("Manga"), "img/onepiece.jpg",false));
-            productos.add(new Producto("Naruto",1,"Shueisha", "20", new Producto.Categoria("Manga"), "img/naruto.jpg",false));
-            productos.add(new Producto("Funko Pop! Batman","Funko", "20", new Producto.Categoria("Funkos"), "img/funko1.jpg",false));
-            productos.add( new Producto("Funko Pop! Batman","Funko", "20", new Producto.Categoria("Funkos"), "img/funko1.jpg",false));
-            productos.add( new Producto("Funko Pop! Spiderman","Funko", "20", new Producto.Categoria("Funkos"), "img/funko2.jpg",false));
-            productos.add( new Producto("Funko Pop! Goku","Funko", "20", new Producto.Categoria("Funkos"), "img/funko3.jpg",false));
+            productos.add(new Producto("Overwatch", "Blizzard", "20", new Producto.Categoria("Videojuegos")));
+            productos.add(new Producto("Watchmen","DC Comics", "20", new Producto.Categoria("Comics")));
+            productos.add(new Producto("Naruto","Shueisha", "20", new Producto.Categoria("Manga")));
+            productos.add(new Producto("Funko Pop! Batman","Funko", "20", new Producto.Categoria("Funkos")));
 
         }catch (Exception e){
            System.out.println(e.getMessage());
