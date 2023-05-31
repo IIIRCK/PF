@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="ojdbc11">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../MEGU/pp/AC/JAVA/ojdbc11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../MEGAsync/pp/AC/JAVA/ojdbc11.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

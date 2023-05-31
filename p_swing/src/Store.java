@@ -72,10 +72,14 @@ public class Store {
     private JScrollPane p1cscroollp;
     private JLabel p1ctotal;
     private JTextPane p1pedidos;
+    private JButton p1btdbtc;
+    private JButton p1btctdb;
     List<Cliente> clientes = Cliente.getClientes();
     List<Personal> personal = Personal.get_personal();
     Map<Integer, Integer> almacen = Almacen.get_productos();
+    //List<Producto> catalogo = Catalogo.get_productos();
     List<Producto> catalogo = Catalogo.get_productos();
+
     List<Producto.Categoria> categorias = Producto.Categoria.getCategorias();
     Map<Integer,Integer> carrito = Carrito.get_productos();
     List<Pedido> pedidos = Pedido.get_pedidos();
@@ -109,7 +113,7 @@ public class Store {
     public Store()  throws MyExeptions.Input_Constructor_Error, MyExeptions.Input_Constructor_Error {
         JTextField[] tfdisa = {p01tfsalary,pfspsswd0,pfspsswd1};
 
-        new Catalogo().fill_Catalogo();
+        //new Catalogo().fill_Catalogo();
 
         for (JTextField tf : tfdisa) {
             tf.setEnabled(false);
@@ -287,7 +291,7 @@ public class Store {
 
             Producto cc = new Catalogo().getBackItem(catalogo);
             ImageIcon ii = new ImageIcon(cc.getImgpath());
-            p1cdata.setText(
+            p1cdata.setText("||id: "+ cc.getId()+
                     "|| Nombre:" + cc.getNombre()+
                             " || Marca: " + cc.getMarca()+
                     "CATEGORIA: " +cc.getCategoria()
@@ -340,7 +344,7 @@ public class Store {
                 }
             }
             int id = Integer.parseInt(p1ctfid.getText());
-            new Pedido().add_pedido(ctpc,ctpcc,crrtotal,id);
+            //new Pedido().add_pedido(ctpc,ctpcc,crrtotal,crrtotal,id);
             pedidos.forEach(p->{
                 p.toString();
             });
@@ -379,7 +383,7 @@ public class Store {
             String d = p02tfp.getText();
             String e = p02cbc.getSelectedItem().toString();
             try {
-                catalogo.add(new Producto(b,c,d,new Producto.Categoria(e),"", false));
+                new Catalogo().add_producto( new Producto(b,c,d,new Producto.Categoria(e)));
             } catch (Exception ex) {
                 x = false;
                 p02ntfy.setText(ex.getMessage());
@@ -412,7 +416,30 @@ public class Store {
             }
         });
 
+        p1btdbtc.addActionListener(a->{
+            try {
+                new DBConn().select();
+                new DBConn().close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
 
+
+        p1btctdb.addActionListener(a->{
+            DBConn db;
+          try {
+                db = new DBConn();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            try {
+               db.load_catalogo();
+               db.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
 
 
 

@@ -6,7 +6,7 @@ public class Producto  extends MyExeptions{
 
 
     private static List<Producto> productos = new ArrayList<>();
-    private static int idct = 1;
+    private static int idct = 5;
     private int id;
     private static int idctpa = 1;
     private int id_producto_almacen;

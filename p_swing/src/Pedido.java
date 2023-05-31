@@ -1,3 +1,4 @@
+import java.sql.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -105,6 +106,8 @@ public class Pedido {
     }
 
 
+    public void add_pedido(int anInt, Array array, Array array1, int anInt1, int anInt2) {
+    }
 }
 
 

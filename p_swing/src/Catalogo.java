@@ -23,6 +23,12 @@ public class Catalogo {
            System.out.println(e.getMessage());
         }
     }
+
+
+
+    public void fill_from_db(){
+    //new DBConn()
+    }
     public static List<Producto> get_productos(){
         return productos;
     }

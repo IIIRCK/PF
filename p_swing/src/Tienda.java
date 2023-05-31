@@ -77,13 +77,13 @@ public class Tienda {
         List<Pedido> pedidos = Pedido.get_pedidos();
 
         Object lock = new Object();
-        new Pedido().add_pedido(id_c, cantidad,1, 1);
+        //new Pedido().add_pedido(id_c, cantidad,1, 1);
 
         int[] idct = {13, 10, 9};
         int[] ct = {3, 3, 3};
 
         pedidos.forEach(p -> println(p.toString()));
-        new Pedido().add_pedido(idct, ct,1, 1);
+        //new Pedido().add_pedido(idct, ct,1, 1);
 
 
         //carrito.forEach((k, v) -> println(k + " " + v));

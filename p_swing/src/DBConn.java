@@ -12,12 +12,42 @@ public class DBConn{
     public DBConn()throws Exception
     {
         Class.forName("oracle.jdbc.OracleDriver");
-        connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:30001/prueba","jumege","1234");
+        connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:30000/prueba","jumege","1234");
         statement = connection.createStatement();
     }
 
+    public static List<Producto> get_productos(){
+        return catalogo;
+    }
+
+
     public void select() throws Exception {
         String qry = "SELECT * FROM CATALOGO";
+        PreparedStatement ps = connection.prepareStatement(qry);
+        try {
+            ResultSet rs = ps.executeQuery();
+            ResultSetMetaData md = rs.getMetaData();
+            int columnCount = md.getColumnCount();
+
+            // Print column names
+            for (int i = 1; i <= columnCount; i++) {
+                String columnName = md.getColumnName(i);
+                System.out.print(columnName + "\t\t");
+            }
+            System.out.println();
+
+            // Print data rows
+            while (rs.next()) {
+                new Catalogo().add_producto(new Producto(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), new Producto.Categoria(rs.getString(5))));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            ps.close();
+        }
+    }
+    public void select_dual() throws Exception {
+        String qry = "SELECT * FROM DUAL";
         PreparedStatement ps = connection.prepareStatement(qry);
         try {
             ResultSet rs = ps.executeQuery();
@@ -47,8 +77,9 @@ public class DBConn{
     }
 
 
-    public void insert(String b) throws SQLException {
-        String qry = "INSERT INTO PRUEBA (TXT) VALUES (?)";
+
+    public void insert(String a,String b,String c,String d,String e) throws SQLException {
+        String qry = "INSERT INTO CATALOGO  VALUES (?,?,?,?,?)";
         PreparedStatement ps = connection.prepareStatement(qry);
         try{
             ps.setString(1,b);
@@ -102,22 +133,23 @@ public class DBConn{
         }
     }
     public void load_catalogo() throws SQLException{
-        String qry = "INSERT INTO CATALOGO (ID_CATALOGO, NOMBRE, DESCRIPCION, PRECIO, CATEGORIA) VALUES (?,?,?,?,?)";
-        PreparedStatement ps = connection.prepareStatement(qry);
-        List<Producto> catalogo = Catalogo.get_productos();
+        String qry = "INSERT INTO CATALOGO (ID_CATALOGO, NOM, MARCA, PREU, CATEGORIA) VALUES (?,?,?,?,?)";
+        PreparedStatement ps = null;
         try{
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
-                 for ( Producto p: catalogo) {
-                    ps.setInt(1,p.getId());
-                    ps.setString(2,p.getNombre());
-                    ps.setString(3,p.getMarca());
-                ps.setInt(4,p.getPrecio());
-                ps.setString(5,p.getCategoria().get_Nombre());
-
+            List<Producto> catalogo = Catalogo.get_productos();
+            ps = connection.prepareStatement(qry);
+            for ( Producto p: catalogo) {
+                     if(p.getId()>=5) {
+                         ps.setInt(1, p.getId());
+                         ps.setString(2, p.getNombre());
+                         ps.setString(3, p.getMarca());
+                         ps.setInt(4, p.getPrecio());
+                         ps.setString(5, p.getCategoria().get_Nombre());
+                         ps.executeUpdate();
+                     }
                  }
 
-            }
+
         }catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -151,19 +183,18 @@ public class DBConn{
 
     public static void main(String[] args)throws Exception {
         DBConn m = new DBConn();
-        ResultSet rs =  statement.executeQuery("SELECT * FROM CATALOGO");
-        ResultSetMetaData md = rs.getMetaData();
-        println(md.getColumnName(1)+" "+ md.getColumnName(2) +" "+ md.getColumnName(3) +" "+ md.getColumnName(4) +" "+ md.getColumnName(5));
         m.select();
+        List<Producto> cc = Catalogo.get_productos();
+
         //m.insert("aaa");
         //m.select();
         //m.update(0,"ora");
         //m.select();
         //m.delete(3);
         //m.fill_catalogo();
-
-        catalogo.forEach(p->{
-            System.out.println(p.getId());
+        m.select_dual();
+        cc.forEach(p->{
+            System.out.println(p.toString());
         });
         m.close();
     }
